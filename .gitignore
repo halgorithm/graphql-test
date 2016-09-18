@@ -1,7 +1,16 @@
 ### graphql-test
+# Webpack artifacts
+bundle.js
+
+# lowDB storage
 db.json
+
+# Misc convenience
 *.gitignore
 !.gitignore
+gitignore/
+
+
 
 ### Node/NPM
 # Logs
@@ -45,6 +54,3 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
-
-# Webpack
-bundle.js
