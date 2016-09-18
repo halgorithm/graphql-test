@@ -5,7 +5,7 @@ const graphqlHTTP = require('express-graphql');
 const jwt = require('express-jwt');
 
 const app = express();
-app.use('/', express.static(__dirname + '/../client'));
+app.use('/', express.static(__dirname + '/../client/public'));
 
 // graphql-express integration
 app.use('/graphql',

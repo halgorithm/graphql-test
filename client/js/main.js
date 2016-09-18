@@ -1,24 +1,11 @@
-<!doctype html>
-<html>
-<head>
-<title>GraphQL Test</title>
-</head>
-
-<body>
-  <h1>banana!~</h1>
-
-<script>
 const xhr = new XMLHttpRequest();
 xhr.addEventListener('load', e => console.log(e.target.responseText));
 xhr.open('POST', '/graphql');
 xhr.setRequestHeader('Content-Type', 'application/graphql');
 xhr.setRequestHeader('Accept', 'application/json');
 xhr.send(`{
-  todo(id: 5) {
+  user(id: 5) {
     id
-    description
+    username
   }
 }`);
-</script>
-</body>
-</html>
