@@ -1,19 +1,24 @@
-const db = require('./db');
-const schema = require('./setup-graphql-schema');
-const root = require('./setup-graphql-resolvers');
-
+const schema = require('./api/schema');
+const resolvers = require('./api/resolvers');
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
-const app = express();
+const jwt = require('express-jwt');
 
-app.use('/', express.static(__dirname + '/client'));
+const app = express();
+app.use('/', express.static(__dirname + '/../client'));
 
 // graphql-express integration
-app.use('/graphql', graphqlHTTP({
-  schema: schema,
-  rootValue: root,
-  graphiql: true,
-}));
+app.use('/graphql',
+  (req, res, next) => {
+    req.userId = '0';
+    next();
+  },
+  graphqlHTTP({
+    schema: schema,
+    rootValue: resolvers,
+    graphiql: true,
+  })
+);
 
 app.listen(8080, '0.0.0.0', () => {
   console.log("Hey it started!");

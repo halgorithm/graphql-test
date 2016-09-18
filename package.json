@@ -2,18 +2,19 @@
   "name": "graphql-test",
   "version": "0.1.0",
   "description": "GraphQL Test",
-  "main": "server.js",
+  "main": "server/main.js",
   "repository": "",
-  "author": "Granchtilda Williams <granch.tilda@willi.ams>",
+  "author": "World Famous Pugilist Granchtilda Williams <granch.tilda@willi.ams>",
   "scripts": {
-    "start": "node server/main.js"
+    "start": "nodemon server/main.js"
   },
   "dependencies": {
     "express": "^4.14.0",
     "express-graphql": "^0.5.4",
+    "express-jwt": "^5.0.0",
     "graphql": "^0.7.0",
     "lodash": "^4.15.0",
-    "node-uuid": "^1.4.7",
-    "sqlite3": "^3.1.4"
+    "lowdb": "^0.13.1",
+    "node-uuid": "^1.4.7"
   }
 }

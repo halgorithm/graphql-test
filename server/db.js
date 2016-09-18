@@ -1,20 +1,50 @@
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(':memory:');
+const _ = require('lodash');
+const low = require('lowdb');
 
-db.serialize(function() {
-  db.run("CREATE TABLE todos (id TEXT, description TEXT, completed BOOLEAN)");
+const db = low('db.json');
+module.exports = db;
 
-  var stmt = db.prepare("INSERT INTO todos (id, description, completed) VALUES (?, ?, ?)");
-  for (var i = 0; i < 10; i++) {
-      stmt.run(i.toString(), `Ipsum ${i}`, false);
-  }
-  stmt.finalize();
+if (db.has('posts').value()) return; // don't re-seed if already seeded
 
-  db.each("SELECT id, description, completed FROM todos", function(err, row) {
-      console.log([row.id, row.description, row.completed]);
-  });
+console.log("Seeding DB...");
+db.defaults({posts: {}, users: {}}).value();
+
+// Users
+`
+  0,turplepurtle,turple
+  1,halgorithm,halgo
+  2,MrLocus,locii
+`
+.trim()
+.split('\n')
+.forEach(row => {
+  const fields = row.trim().split(',');
+  db.get('users').set(fields[0], {
+    id: fields[0],
+    username: fields[1],
+    following: [],
+    accessToken: fields[2],
+  }).value();
 });
 
-//db.close(); // close is for fucknobs aannehghnhh
-
-module.exports = db;
+// Posts
+_.forEach([
+  'http://example.com',
+  'http://google.com',
+  'http://ebay.com',
+  'http://yahoo.com',
+  'http://lemonparty.com',
+  'http://corgiorgy.com',
+  'http://facebook.com',
+  'http://developer.mozilla.com',
+], (url, i) => {
+  const id = String(i);
+  db.get('posts').set(id, {
+    id: id,
+    authorId: String(Math.min(Math.floor(i / 3),2)),
+    title: 'Hey guys, come visit ' + url,
+    link: url,
+    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    upvotes: 256 * Math.random() | 0,
+  }).value();
+});
