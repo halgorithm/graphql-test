@@ -5,6 +5,7 @@ module.exports = {
     path: __dirname + '/client/public/js/',
     filename: 'app.js'
   },
+  devtool: 'source-map',
   module: {
     loaders: [
       {

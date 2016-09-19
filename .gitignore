@@ -1,6 +1,7 @@
 ### graphql-test
 # Webpack artifacts
-bundle.js
+client/public/js/app.js
+client/public/js/app.js.map
 
 # lowDB storage
 db.json

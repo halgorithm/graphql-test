@@ -1,10 +1,13 @@
 const db = require('../db');
 const uuid = require('node-uuid');
 const _ = require('lodash');
+const User = require('../models/user')
+const Post = require('../models/post')
 
 const resolvers = {
   me(args, req) {
-    return db.get(`users.${req.userId}`).value();
+    const attrs = db.get(`users.${req.userId}`).value();
+    return new User(attrs);
   },
 
   makeTextPost(args, req) {
@@ -13,7 +16,7 @@ const resolvers = {
     attrs = _.defaults(attrs, defaults);
 
     db.set(`posts.${attrs.id}`, attrs).value();
-    return attrs;
+    return new Post(attrs);
   },
 
   makeLinkPost(args, req) {
@@ -22,49 +25,49 @@ const resolvers = {
     attrs = _.defaults(attrs, defaults);
 
     db.set(`posts.${attrs.id}`, attrs).value();
-    return attrs;
+    return new Post(attrs);
   },
 
-  deletePost(args, req) {
+  deletePost({id}, req) {
     // TODO disallow deleting an already-deleted post
-    const post = db.get(`posts.${args.id}`).value();
-    db.unset(`posts.${args.id}`).value();
+    const attrs = db.get(`posts.${id}`).value();
+    db.unset(`posts.${id}`).value();
 
-    return post;
+    return new Post(attrs);
   },
 
-  updatePost(args, req) {
+  updatePost({id, content}, req) {
     // TODO disallow updates to already-deleted posts
     // TODO disallow updates to link posts
-    const post = db.get(`posts.${args.id}`).assign({content: args.content}).value();
+    const attrs = db.get(`posts.${id}`).assign({content}).value();
 
-    return post;
+    return new Post(attrs);
   },
 
   followUser(args, req) {
     // TODO disallow following an invalid user id
     // TODO disallow following a banned user id
-    console.log(req.userId);
     const myFollowing = db.get(`users.${req.userId}.following`).value();
-    const user = db.get(`users.${args.id}`).value();
+    const userAttrs = db.get(`users.${args.id}`).value();
 
     if (!_.includes(myFollowing, args.id)) {
       db.set(`users.${req.userId}.following.${myFollowing.length}`, args.id).value();
     }
 
-    return user;
+    return new Post(userAttrs);
   },
 
   posts(args, req) {
-    return db.get('posts').values().value();
+    return db.get('posts').values().map(attrs => new Post(attrs)).value();
   },
 
   post(args, req) {
-    return db.get(`posts.${args.id}`).value();
+    return new Post(db.get(`posts.${args.id}`).value());
   },
 
-  userPosts(args, req) {
-    return db.get('posts').filter({'authorId': args.id}).value();
+  user(args, req) {
+    const attrs = db.get(`users.${args.id}`).value();
+    return new User(attrs);
   }
 };
 

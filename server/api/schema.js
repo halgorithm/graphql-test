@@ -8,9 +8,6 @@ const schema = graphQL.buildSchema(`
     # Get all Posts for a subreddit (TODO figure out arguments for scoping/pagination bullshitz)
     posts: [Post!]!
 
-    # Get all Posts authored by the provided User id
-    userPosts(id: ID!): [Post!]!
-
     # Get the authenticated User
     me: User!
 
@@ -45,13 +42,16 @@ const schema = graphQL.buildSchema(`
     upvote(id: ID!): Post!
   }
 
+  # A user of the website who can author posts and follow other users.
   type User {
     id: ID!
     username: String!
+    posts: [Post!]!
     following: [User!]!
     accessToken: String!
   }
 
+  # A post, which can be either a link post or a text post.
   type Post {
     id: ID!
     author: User!
