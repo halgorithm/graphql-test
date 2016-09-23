@@ -1,10 +1,15 @@
 const db = require('../db');
 const uuid = require('node-uuid');
 const _ = require('lodash');
-const User = require('../models/user')
-const Post = require('../models/post')
+const User = require('../models/user');
+const Post = require('../models/post');
+import {pubsub} from './subscription-manager';
 
 const resolvers = {
+  awesome(args, req) {
+    return true;
+  },
+
   me(args, req) {
     const attrs = db.get(`users.${req.userId}`).value();
     return new User(attrs);
@@ -12,8 +17,8 @@ const resolvers = {
 
   makeTextPost(args, req) {
     const defaults = {authorId: req.userId, link: null, upvotes: 0};
-    const attrs = {id: uuid.v4(), title: args.title, content: args.content};
-    attrs = _.defaults(attrs, defaults);
+    let attrs = {id: uuid.v4(), title: args.title, content: args.content};
+    _.defaults(attrs, defaults);
 
     db.set(`posts.${attrs.id}`, attrs).value();
     return new Post(attrs);
@@ -21,8 +26,8 @@ const resolvers = {
 
   makeLinkPost(args, req) {
     const defaults = {authorId: req.userId, content: null, upvotes: 0};
-    const attrs = {id: uuid.v4(), title: args.title, link: args.link};
-    attrs = _.defaults(attrs, defaults);
+    let attrs = {id: uuid.v4(), title: args.title, link: args.link};
+    _.defaults(attrs, defaults);
 
     db.set(`posts.${attrs.id}`, attrs).value();
     return new Post(attrs);
@@ -40,8 +45,10 @@ const resolvers = {
     // TODO disallow updates to already-deleted posts
     // TODO disallow updates to link posts
     const attrs = db.get(`posts.${id}`).assign({content}).value();
+    const post = new Post(attrs);
+    pubsub.publish('postChanged', post);
 
-    return new Post(attrs);
+    return post;
   },
 
   followUser(args, req) {

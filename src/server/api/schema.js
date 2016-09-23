@@ -1,6 +1,15 @@
 const graphQL = require('graphql');
 
 const schema = graphQL.buildSchema(`
+  type Subscription {
+    # Get the upvote count for a post?
+    # upvotes(id: ID!): Int!
+    # Get a Post subscription?
+    post(id: ID!): Post!
+    # Get a Post's Comments?
+    # comments(id: ID!): [Comment!]!
+  }
+
   type Query {
     # Get a Post by ID
     post(id: ID!): Post!

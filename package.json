@@ -6,18 +6,30 @@
   "repository": "",
   "author": "World Famous Pugilist Granchtilda Williams <granch.tilda@willi.ams>",
   "scripts": {
-    "start": "run-p start-nodemon start-webpack",
-    "start-nodemon": "nodemon server/main.js",
-    "start-webpack": "webpack --watch"
+    "start": "run-p start-dev-server start-dev-webpack",
+    "start-dev-server": "nodemon --ignore 'client/*' --ignore '.c9/*' --exec 'babel-node -- src/server/main.js'",
+    "start-dev-webpack": "webpack --watch --config webpack.dev.config.js",
+    "clean": "rm -rf build && mkdir build",
+    "build": "npm run clean && npm run build-server && npm run build-client",
+    "build-server": "babel -d ./build/server ./src/server -s",
+    "build-client": "webpack --config webpack.build.config.js",
+    "prod": "node ./build/server/main.js"
   },
   "dependencies": {
+    "@cycle/dom": "^12.2.5",
+    "@cycle/http": "^11.0.1",
+    "@cycle/rxjs-run": "^3.0.3",
     "apollo-client": "^0.4.15",
+    "babel-cli": "^6.14.0",
     "babel-loader": "^6.2.5",
+    "babel-plugin-transform-runtime": "^6.15.0",
     "babel-preset-es2015": "^6.14.0",
     "express": "^4.14.0",
     "express-graphql": "^0.5.4",
     "express-jwt": "^5.0.0",
     "graphql": "^0.7.0",
+    "graphql-subscriptions": "^0.1.5",
+    "json-loader": "^0.5.4",
     "lodash": "^4.15.0",
     "lowdb": "^0.13.1",
     "most": "^1.0.3",
@@ -26,9 +38,13 @@
     "react": "^15.3.1",
     "react-apollo": "^0.5.5",
     "react-dom": "^15.3.1",
-    "webpack": "^1.13.2"
+    "rxjs": "^5.0.0-beta.12",
+    "subscriptions-transport-ws": "^0.2.2",
+    "webpack": "^1.13.2",
+    "xstream": "^6.3.0"
   },
   "devDependencies": {
+    "babel-loader": "^6.2.5",
     "nodemon": "^1.10.2"
   }
 }

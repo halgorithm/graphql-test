@@ -2,6 +2,7 @@
 # Webpack artifacts
 client/public/js/app.js
 client/public/js/app.js.map
+build/
 
 # lowDB storage
 db.json
