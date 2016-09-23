@@ -5,7 +5,7 @@ client/public/js/app.js.map
 build/
 
 # lowDB storage
-db.json
+data/
 
 # Misc convenience
 *.gitignore
